@@ -7,12 +7,12 @@ public class Person {
     private int personId;
 
     @NotEmpty(message = "Name should not be empty")
-    @Pattern(regexp = "[A-Z]\\w+\\s[A-Z]\\w+\\s[A-Z]\\w+", message = "You have to enter the full name")
+    @Pattern(regexp = "[А-Я][a-я]+\\s[А-Я][а-я]+\\s[А-Я][а-я]+",
+            message = "The name is incorrect. Correct name format: Фамилия, Имя, Отчество")
     private String fullName;
 
     @Min(value = 1920, message = "The age is too low!")
-    @Max(value = 2024, message = "The age is too high!")
-    @NotEmpty(message = "Age of birth should not be empty")
+    @Max(value = 2023, message = "The age is too high!")
     private int ageOfBirth;
 
     public Person() {

@@ -1,10 +1,26 @@
 package library.models;
 
+import javax.validation.constraints.Max;
+import javax.validation.constraints.NotEmpty;
+
 public class Book {
     private int bookId;
+
+    //private int personId;
+
+    @NotEmpty(message = "Title should not be empty!")
     private String titleOfBook;
+
+    @NotEmpty(message = "Author should not be empty!")
     private String authorOfBook;
+
+    @Max(value = 2024, message = "Incorrect year of publishing the book")
     private int ageOfBook;
+
+    public Book() {
+
+    }
+
 
     public Book(int bookId, String titleOfBook, String authorOfBook, int ageOfBook) {
         this.bookId = bookId;
