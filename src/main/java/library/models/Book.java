@@ -14,7 +14,7 @@ public class Book {
     @NotEmpty(message = "Author should not be empty!")
     private String authorOfBook;
 
-    @Max(value = 2024, message = "Incorrect year of publishing the book")
+    @Max(value = 2023, message = "Incorrect year of publishing the book")
     private int ageOfBook;
 
     public Book() {
