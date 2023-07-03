@@ -2,16 +2,17 @@ package library.util;
 
 import library.dao.BookDAO;
 import library.models.Book;
+import library.services.BooksService;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
 @Component
 public class BookValidator implements Validator {
 
-    private final BookDAO bookDAO;
+    private final BooksService booksService;
 
-    public BookValidator(BookDAO bookDAO) {
-        this.bookDAO = bookDAO;
+    public BookValidator(BooksService booksService) {
+        this.booksService = booksService;
     }
 
     @Override
@@ -23,7 +24,7 @@ public class BookValidator implements Validator {
     public void validate(Object o, Errors errors) {
         Book book = (Book) o;
 
-        if(bookDAO.show(book.getTitleOfBook()).isPresent()) {
+        if(booksService.findByTitleOfBook(book.getTitleOfBook()).isPresent()) {
             errors.rejectValue("titleOfBook", "", "This book is already existing");
         }
 
