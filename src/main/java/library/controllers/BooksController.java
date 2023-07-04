@@ -8,12 +8,14 @@ import library.services.BooksService;
 import library.services.PeopleService;
 import library.util.BookValidator;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.Optional;
 
 @Controller
 @RequestMapping("/books")
@@ -32,8 +34,19 @@ public class BooksController {
     }
 
     @GetMapping()
-    public String showAll(Model model) {
-        model.addAttribute("books", booksService.findAll());
+    public String showAll(Model model, @RequestParam(value = "page") Optional<Integer> page,
+                          @RequestParam(value = "books_per_page") Optional<Integer> booksPerPage,
+                          @RequestParam(value = "sort_by_year") Optional<String> sortByYear) {
+
+        if(page.isPresent() && booksPerPage.isPresent())
+            model.addAttribute("books", booksService.booksPerPage(page.get(), booksPerPage.get()));
+        if(page.isEmpty() && booksPerPage.isEmpty())
+            model.addAttribute("books", booksService.findAll());
+        if(sortByYear.isPresent() && sortByYear.get().equals("true"))
+            model.addAttribute("books", booksService.sortByYear());
+        if(page.isPresent() && booksPerPage.isPresent() && sortByYear.isPresent() && sortByYear.get().equals("true"))
+            model.addAttribute("books", booksService.booksPerPageSorted(page.get(), booksPerPage.get()));
+
         return "books/index";
     }
 
@@ -93,6 +106,16 @@ public class BooksController {
     public String deleteBook(@PathVariable("id") int id) {
         booksService.delete(id);
         return "redirect:/books";
+    }
+
+    @GetMapping("/search")
+    public String search(Model model, @Param("keyword") String keyword) {
+        Book book = booksService.findBookByTitle(keyword);
+
+        model.addAttribute("book", book);
+        model.addAttribute("keyword", keyword);
+        model.addAttribute("owner", booksService.findOwnerOfBook(book));
+        return "books/search";
     }
 
 }

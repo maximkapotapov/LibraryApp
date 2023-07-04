@@ -3,8 +3,9 @@ package library.services;
 import library.models.Book;
 import library.models.Person;
 import library.repositories.BookRepository;
-import library.repositories.PersonRepository;
 import org.hibernate.Session;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -71,5 +72,35 @@ public class BooksService {
     @Transactional
     public void delete(int id) {
         bookRepository.deleteById(id);
+    }
+
+    public List<Book> booksPerPage(int page, int booksPerPage) {
+        return bookRepository.findAll(PageRequest.of(page, booksPerPage)).getContent();
+    }
+
+    public List<Book> sortByYear() {
+        return bookRepository.findAll((Sort.by("ageOfBook")));
+    }
+
+    public List<Book> booksPerPageSorted(int page, int booksPerPage) {
+        return bookRepository.findAll(PageRequest.of(page, booksPerPage, Sort.by("ageOfBook"))).getContent();
+    }
+
+    public Book findBookByTitle(String keyword) {
+        if(keyword != null) {
+            return bookRepository.findBookByTitleOfBookStartingWith(keyword);
+        }
+        return null;
+    }
+
+    public Person findOwnerOfBook(Book book) {
+        if(book != null) {
+            Session session = entityManager.unwrap(Session.class);
+            session.merge(book);
+            Person owner = book.getOwner();
+            session.close();
+            return owner;
+        }
+        return null;
     }
 }
