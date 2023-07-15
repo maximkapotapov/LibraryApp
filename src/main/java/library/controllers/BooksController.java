@@ -1,7 +1,5 @@
 package library.controllers;
 
-import library.dao.BookDAO;
-import library.dao.PersonDAO;
 import library.models.Book;
 import library.models.Person;
 import library.services.BooksService;

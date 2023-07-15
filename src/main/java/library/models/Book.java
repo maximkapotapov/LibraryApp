@@ -1,10 +1,14 @@
 package library.models;
 
+import org.hibernate.Session;
 import org.hibernate.annotations.Cascade;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.NotEmpty;
+import java.util.Date;
+import java.util.concurrent.TimeUnit;
 
 @Entity
 @Table(name = "book")
@@ -29,6 +33,13 @@ public class Book {
     @ManyToOne
     @JoinColumn(name = "person_id", referencedColumnName = "person_id")
     private Person owner;
+
+    @Column(name = "taken_at")
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date takenAt;
+
+    @Transient
+    private boolean expiredDate;
 
     public Book() {
 
@@ -80,4 +91,22 @@ public class Book {
     public void setOwner(Person owner) {
         this.owner = owner;
     }
+
+    public Date getTakenAt() {
+        return takenAt;
+    }
+
+    public void setTakenAt(Date takenAt) {
+        this.takenAt = takenAt;
+    }
+
+    public boolean getExpiredDate() {
+        if(this.getTakenAt() != null) {
+            long newDate = new Date().getTime();
+            long takenAt = this.getTakenAt().getTime();
+            return ((newDate - takenAt) > TimeUnit.DAYS.toMillis(10));
+        } else {
+            return false;
+        }
+}
 }

@@ -10,6 +10,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
+import javax.persistence.Transient;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -67,6 +69,7 @@ public class BooksService {
         Session session = entityManager.unwrap(Session.class);
         Book book = session.get(Book.class, id);
         book.setOwner(person);
+        book.setTakenAt(new Date());
     }
 
     @Transactional
